@@ -4,14 +4,14 @@ from pydub import AudioSegment
 import os
 
 
-def record_audio(filename="output.mp3" , record_seconds=5 , sample_rate=48000):
+def record_audio(filename="audio_file/output.mp3" , record_seconds=5 , sample_rate=48000, DEVICE_INDEX = 6, channels=1):
     """
     Запись звука с микрофона и сохранение в MP3
     """
+    # ВАЖНО: Устанавливаем количество каналов = 1 (моно)
     # Параметры записи
     chunk = 1024  # Размер буфера
     format = pyaudio.paInt16  # Формат данных
-    DEVICE_INDEX = 6  # Используем USB микрофон
 
     # Инициализация PyAudio
     p = pyaudio.PyAudio()
@@ -21,9 +21,7 @@ def record_audio(filename="output.mp3" , record_seconds=5 , sample_rate=48000):
     print(f"Используется устройство: {device_info['name']}")
     print(f"Макс. входных каналов: {device_info['maxInputChannels']}")
 
-    # ВАЖНО: Устанавливаем количество каналов = 1 (моно)
-    # Так как USB микрофон имеет только 1 входной канал
-    channels = 1
+
 
     # Открытие потока для записи
     stream = p.open(format=format ,
@@ -67,7 +65,11 @@ def record_audio(filename="output.mp3" , record_seconds=5 , sample_rate=48000):
     print(f"Аудио сохранено как {filename}")
     print(f"Размер файла: {os.path.getsize(filename) / 1024:.2f} KB")
 
-
-if __name__ == "__main__":
-    # Простая запись
-    record_audio("my_recording.mp3" , record_seconds=10)
+def microphone():
+    for i in range(pyaudio.PyAudio().get_device_count()):
+        dev = pyaudio.PyAudio().get_device_info_by_index(i)
+        print((i , dev['name'] , dev['maxInputChannels']))
+# if __name__ == "__main__":
+#     microphone()
+#     # Простая запись
+#     record_audio("audio_file/my_recording.mp3",record_seconds=5 )
