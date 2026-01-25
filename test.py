@@ -1,75 +1,37 @@
-from PyQt6.QtWidgets import *
-from PyQt6.QtCore import *
 import sys
-
-
-class SimpleRecordingApp(QWidget):
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QComboBox, QLabel
+from get_audio import microphone
+class ComboBoxDemo(QWidget):
     def __init__(self):
         super().__init__()
-        self.init_ui()
+        self.setWindowTitle("Пример QComboBox")
+        self.resize(300, 100)
 
-    def init_ui(self):
-        self.setWindowTitle("Запись")
-        self.setFixedSize(300 , 100)
+        # Основной лейаут
+        layout = QVBoxLayout()
 
-        # Основной layout
-        self.layout = QHBoxLayout()
+        # Создание выпадающего списка
+        self.combo = QComboBox()
+        self.combo.addItems(microphone())
+        # print(microphone())
 
-        # Кнопка запуска
-        self.start_btn = QPushButton("▶ Запуск")
-        self.start_btn.setFixedSize(80 , 40)
-        self.start_btn.clicked.connect(self.start_recording)
+        # self.combo.addItems(microphone(name='name'))  # Добавление списка
 
-        # Кнопка паузы
-        self.pause_btn = QPushButton("⏸ Пауза")
-        self.pause_btn.setFixedSize(80 , 40)
-        self.pause_btn.clicked.connect(self.pause_recording)
-        self.pause_btn.hide()  # Скрываем изначально
+        # self.combo.currentIndexChanged.connect(self.selection_change)
 
-        # Кнопка остановки
-        self.stop_btn = QPushButton("⏹ Стоп")
-        self.stop_btn.setFixedSize(80 , 40)
-        self.stop_btn.clicked.connect(self.stop_recording)
-        self.stop_btn.hide()  # Скрываем изначально
+        # Лейбл для отображения выбора
+        self.label = QLabel("Выберите пункт")
 
-        # Добавляем кнопки в layout
-        self.layout.addWidget(self.start_btn)
-        self.layout.addWidget(self.pause_btn)
-        self.layout.addWidget(self.stop_btn)
+        layout.addWidget(self.combo)
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-        # Центрируем кнопки
-        self.layout.addStretch()
-        self.layout.insertWidget(0 , self.start_btn)
-        self.layout.addStretch()
-
-        self.setLayout(self.layout)
-
-    def start_recording(self):
-        print("🎤 Запись начата")
-
-        # Прячем кнопку запуска
-        self.start_btn.hide()
-
-        # Показываем кнопки паузы и остановки
-        self.pause_btn.show()
-        self.stop_btn.show()
-
-    def pause_recording(self):
-        print("⏸ Запись на паузе")
-
-    def stop_recording(self):
-        print("⏹ Запись остановлена")
-
-        # Прячем кнопки паузы и остановки
-        self.pause_btn.hide()
-        self.stop_btn.hide()
-
-        # Показываем кнопку запуска
-        self.start_btn.show()
-
+    def selection_change(self):
+        # Обработка изменения выбора
+        self.label.setText(f"Выбрано: {self.combo.currentText()}")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = SimpleRecordingApp()
-    window.show()
+    demo = ComboBoxDemo()
+    demo.show()
     sys.exit(app.exec())

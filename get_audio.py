@@ -3,7 +3,7 @@ import wave
 from pydub import AudioSegment
 import os
 
-
+recording = True
 def record_audio(filename="audio_file/output.mp3" , record_seconds=5 , sample_rate=48000, DEVICE_INDEX = 6, channels=1):
     """
     Запись звука с микрофона и сохранение в MP3
@@ -35,7 +35,7 @@ def record_audio(filename="audio_file/output.mp3" , record_seconds=5 , sample_ra
 
     # Запись данных
     frames = []
-    for i in range(0 , int(sample_rate / chunk * record_seconds)):
+    while recording:
         data = stream.read(chunk)
         frames.append(data)
 
@@ -66,9 +66,11 @@ def record_audio(filename="audio_file/output.mp3" , record_seconds=5 , sample_ra
     print(f"Размер файла: {os.path.getsize(filename) / 1024:.2f} KB")
 
 def microphone():
+    dev=[]
     for i in range(pyaudio.PyAudio().get_device_count()):
-        dev = pyaudio.PyAudio().get_device_info_by_index(i)
-        print((i , dev['name'] , dev['maxInputChannels']))
+        dev.append(pyaudio.PyAudio().get_device_info_by_index(i)['name'])
+        # print((i , dev['name'] , dev['maxInputChannels']))
+    return dev
 # if __name__ == "__main__":
 #     microphone()
 #     # Простая запись
